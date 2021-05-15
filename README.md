@@ -11,8 +11,10 @@ Just a great way to make GSIs, even for dynamic partitions
 
 ## Released GSIs (Erfan Abdi/ErfanGSIs)
 Download link: https://mirrors.lolinet.com/firmware/gsi/  
-XDA thread: https://forum.xda-developers.com/project-treble/trebleenabled-device-development/pie-erfan-gsi-ports-t3906486  
+XDA thread: https://forum.xda-developers.com/project-treble/trebleenabled-device-development/pie-erfan-gsi-ports-t3906486
+
 Telegram channel: https://t.me/ErfanGSI
+
 Telegram group: https://t.me/ErfanGSIs  
   
 
