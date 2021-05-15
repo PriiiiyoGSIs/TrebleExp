@@ -34,8 +34,8 @@ Telegram group: https://t.me/ErfanGSIs
 [![Download Priiiyo GSIs](https://img.shields.io/sourceforge/dw/priyogsis.svg)](https://sourceforge.net/projects/priyogsis/files/latest/download)
 [![Download Priiiyo GSIs](https://img.shields.io/sourceforge/dt/priyogsis.svg)](https://sourceforge.net/projects/priyogsis/files/latest/download)  
 Download link: https://sourceforge.net/projects/priyogsis/files/  
-Telegram channel: https://t.me/priiiyogsi
-Telegram group: https://t.me/priiiyogsis  
+Telegram channel: https://t.me/PriiiyoGSI
+Telegram group: https://t.me/PriiiyoGSIs
   
 
 ### Download tools
@@ -45,6 +45,13 @@ git clone --recurse-submodules https://github.com/smpriiiyo/PriiiyoGSIs.git Erfa
 
 ### For setting up requirements
     sudo bash setup.sh
+    
+### Generating GSI from stock firmware URL
+Example: for making OxygenOS of oneplus 7 pro firmware, you can use this command inside ErfanGSIs folder
+```
+./url2GSI.sh https://oxygenos.oneplus.net/OnePlus7ProOxygen_21.O.07_OTA_007_all_1905120542_fc480574576b4843.zip OxygenOS
+```
+check url2GSI.sh for more info    
 
 ### Credits
 All credits Goes to Erfan Abdi, HeliOS, Nippon, Jamie, VegaZS, Realityislie, SSpidey, ElytrA8, Sky Yumi, and others.
