@@ -33,7 +33,8 @@ Telegram group: https://t.me/ErfanGSIs
 [![Download Priiiyo GSIs](https://img.shields.io/sourceforge/dm/priyogsis.svg)](https://sourceforge.net/projects/priyogsis/files/latest/download)
 [![Download Priiiyo GSIs](https://img.shields.io/sourceforge/dw/priyogsis.svg)](https://sourceforge.net/projects/priyogsis/files/latest/download)
 [![Download Priiiyo GSIs](https://img.shields.io/sourceforge/dt/priyogsis.svg)](https://sourceforge.net/projects/priyogsis/files/latest/download)  
-Download link: https://sourceforge.net/projects/priyogsis/files/  
+Download link: https://sourceforge.net/projects/priyogsis/files/
+
 Telegram channel: https://t.me/PriiiyoGSI
 Telegram group: https://t.me/PriiiyoGSIs
   
