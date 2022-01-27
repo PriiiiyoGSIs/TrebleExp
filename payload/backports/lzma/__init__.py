@@ -123,13 +123,13 @@ class LZMAFile(io.BufferedIOBase):
 
         if hasattr(filename, "read") or hasattr(filename, "write"):
             self._fp = filename
-            self._mode = mode_code
         else:
             if "b" not in mode:
                 mode += "b"
             self._fp = io.open(filename, mode)
             self._closefp = True
-            self._mode = mode_code
+
+        self._mode = mode_code
 
     def close(self):
         """Flush and close the file.
@@ -209,20 +209,15 @@ class LZMAFile(io.BufferedIOBase):
             if self._buffer:
                 return True
 
-            if self._decompressor.unused_data:
-                rawblock = self._decompressor.unused_data
-            else:
-                rawblock = self._fp.read(_BUFFER_SIZE)
-
+            rawblock = self._decompressor.unused_data or self._fp.read(_BUFFER_SIZE)
             if not rawblock:
-                if self._decompressor.eof:
-                    self._mode = _MODE_READ_EOF
-                    self._size = self._pos
-                    return False
-                else:
+                if not self._decompressor.eof:
                     raise EOFError("Compressed file ended before the "
                                    "end-of-stream marker was reached")
 
+                self._mode = _MODE_READ_EOF
+                self._size = self._pos
+                return False
             if self._decompressor.eof:
                 # Continue to next stream.
                 self._decompressor = LZMADecompressor(**self._init_args)

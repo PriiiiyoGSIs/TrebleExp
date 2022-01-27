@@ -36,10 +36,7 @@ signapklibs = cwd + "/" + os_info
 def CheckCert(filetoopen, cert):
     f = open(filetoopen)
     s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
-    if s.find(cert) != -1:
-        return True
-    else:
-        return False
+    return s.find(cert) != -1
 
 def getcert(jar, out):
     extractjar = "7z e " + jar + " META-INF/CERT.RSA -o" + tmpdir
