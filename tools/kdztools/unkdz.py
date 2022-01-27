@@ -146,29 +146,24 @@ class KDZFileTools(kdz.KDZFile):
 		if not os.path.exists(self.outdir):
 			os.makedirs(self.outdir)
 
-		# Open the new file for writing
-		outfile = open(os.path.join(self.outdir,currentPartition['name'].decode("utf8")), 'wb')
+		with open(os.path.join(self.outdir,currentPartition['name'].decode("utf8")), 'wb') as outfile:
+			# Use 1024 byte chunks
+			chunkSize = 1024
 
-		# Use 1024 byte chunks
-		chunkSize = 1024
+			# uncomment to prevent runaways
+			#for x in xrange(10):
 
-		# uncomment to prevent runaways
-		#for x in xrange(10):
+			while True:
 
-		while True:
+				# Read file in 1024 byte chunks
+				outfile.write(self.infile.read(chunkSize))
 
-			# Read file in 1024 byte chunks
-			outfile.write(self.infile.read(chunkSize))
-
-			# If the output file + chunkSize would be larger than the input data
-			if outfile.tell() + chunkSize >= currentPartition['length']:
-				# Change the chunk size to be the difference between the length of the input and the current length of the output
-				outfile.write(self.infile.read(currentPartition['length'] - outfile.tell() ))
-				# Prevent runaways!
-				break
-
-		# Close the file
-		outfile.close()
+				# If the output file + chunkSize would be larger than the input data
+				if outfile.tell() + chunkSize >= currentPartition['length']:
+					# Change the chunk size to be the difference between the length of the input and the current length of the output
+					outfile.write(self.infile.read(currentPartition['length'] - outfile.tell() ))
+					# Prevent runaways!
+					break
 
 	def saveExtra(self):
 		"""
@@ -183,52 +178,44 @@ class KDZFileTools(kdz.KDZFile):
 
 		filename = os.path.join(self.outdir, "kdz_extras.bin")
 
-		extra = open(filename, "wb")
+		with open(filename, "wb") as extra:
+			print("[+] Extracting extra data to " + filename)
 
-		print("[+] Extracting extra data to " + filename)
+			self.infile.seek(self.headerEnd, os.SEEK_SET)
 
-		self.infile.seek(self.headerEnd, os.SEEK_SET)
+			total = self.dataStart - self.headerEnd
+			while total > 0:
+				count = min(total, 4096)
 
-		total = self.dataStart - self.headerEnd
-		while total > 0:
-			count = 4096 if 4096 < total else total
+				buf = self.infile.read(count)
+				extra.write(buf)
 
-			buf = self.infile.read(count)
-			extra.write(buf)
-
-			total -= count
-
-		extra.close()
+				total -= count
 
 	def saveParams(self):
 		"""
 		Save the parameters for creating a compatible file
 		"""
 
-		params = open(os.path.join(self.outdir, ".kdz.params"), "wt")
-		params.write('# saved parameters from the file "{:s}"\n'.format(self.kdzfile))
-		params.write("version={:d}\n".format(self.header_type))
-		params.write("# note, this is actually quite fluid, dataStart just needs to be large enough\n")
-		params.write("# for headers not to overwrite data; roughly 16 bytes for overhead plus 272\n")
-		params.write("# bytes per file should be sufficient (but not match original)\n")
-		params.write("dataStart={:d}\n".format(self.dataStart))
-		params.write("# embedded files\n")
+		with open(os.path.join(self.outdir, ".kdz.params"), "wt") as params:
+			params.write('# saved parameters from the file "{:s}"\n'.format(self.kdzfile))
+			params.write("version={:d}\n".format(self.header_type))
+			params.write("# note, this is actually quite fluid, dataStart just needs to be large enough\n")
+			params.write("# for headers not to overwrite data; roughly 16 bytes for overhead plus 272\n")
+			params.write("# bytes per file should be sufficient (but not match original)\n")
+			params.write("dataStart={:d}\n".format(self.dataStart))
+			params.write("# embedded files\n")
 
-		out = []
-		i = 0
-		for p in self.partitions:
-			out.append({'name': p['name'], 'data': p['offset'], 'header': i})
-			i += 1
+			out = [{
+			    'name': p['name'],
+			    'data': p['offset'],
+			    'header': i
+			} for i, p in enumerate(self.partitions)]
+			out.sort(key=lambda p: p['data'])
 
-		out.sort(key=lambda p: p['data'])
-
-		i = 0
-		for p in out:
-			params.write("payload{:d}={:s}\n".format(i, p['name'].decode("utf8")))
-			params.write("payload{:d}head={:d}\n".format(i, p['header']))
-			i += 1
-
-		params.close()
+			for i, p in enumerate(out):
+				params.write("payload{:d}={:s}\n".format(i, p['name'].decode("utf8")))
+				params.write("payload{:d}head={:d}\n".format(i, p['header']))
 
 	def parseArgs(self):
 		# Parse arguments

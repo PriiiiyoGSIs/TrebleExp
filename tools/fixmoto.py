@@ -6,7 +6,7 @@
 from __future__ import print_function
 import sys, os, re, argparse
 
-if int(''.join(str(i) for i in sys.version_info[0:2])) < 35:
+if int(''.join(str(i) for i in sys.version_info[:2])) < 35:
 	print('Python 3.5 or newer is required.')
 	sys.exit(1)
 
@@ -14,10 +14,7 @@ def existf(filename):
 	try:
 		if os.path.isdir(filename):
 			return 2
-		if os.stat(filename).st_size > 0:
-			return 0
-		else:
-			return 1
+		return 0 if os.stat(filename).st_size > 0 else 1
 	except OSError:
 		return 2
 
@@ -28,7 +25,7 @@ args = parser.parse_args()
 
 b = args.broken
 n = args.fixed
-    
+
 if existf(b) != 0:
     print('\n'+b+' does not exist.\n')
     sys.exit()
@@ -41,10 +38,7 @@ if not moto:
     print('\nThis does not appear to be a Motorola img\n')
     sys.exit()
 
-result = []
-for i in re.finditer(b'\x53\xEF', data):
-    result.append(i.start() - 1080)
-
+result = [i.start() - 1080 for i in re.finditer(b'\x53\xEF', data)]
 offset = 0
 for i in result:
     if data[i] == 0:
